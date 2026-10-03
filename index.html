@@ -1,2 +1,305 @@
-<h1> hello from Smart</h1>
-  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#11130f">
+	<meta name="description" content="Smart's little corner of the internet: Python experiments, games, and a developer in progress.">
+	<title>Smart.exe — learning by making</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			color-scheme: dark;
+			--ink: #11130f;
+			--panel: #191c17;
+			--panel-light: #22261f;
+			--paper: #f3f2e8;
+			--muted: #a3a79a;
+			--line: rgba(243, 242, 232, .13);
+			--lime: #c9ff54;
+			--coral: #ff765f;
+			--sky: #8bdcff;
+			--mono: "DM Mono", monospace;
+			--display: "Space Grotesk", sans-serif;
+		}
+		* { box-sizing: border-box; }
+		html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+		body {
+			margin: 0;
+			background-color: var(--ink);
+			background-image: radial-gradient(rgba(243,242,232,.14) .7px, transparent .7px);
+			background-size: 22px 22px;
+			color: var(--paper);
+			font-family: var(--display);
+			overflow-x: hidden;
+		}
+		body::before {
+			content: "";
+			position: fixed;
+			z-index: -1;
+			inset: 0;
+			background: radial-gradient(ellipse at 82% 14%, rgba(201,255,84,.09), transparent 35%), radial-gradient(ellipse at 7% 60%, rgba(255,118,95,.08), transparent 35%);
+			pointer-events: none;
+		}
+		a { color: inherit; text-decoration: none; }
+		button { font: inherit; }
+		::selection { background: var(--lime); color: var(--ink); }
+		.skip-link { position: absolute; top: -60px; left: 16px; z-index: 20; padding: 12px 16px; background: var(--lime); color: var(--ink); }
+		.skip-link:focus { top: 12px; }
+		.wrap { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
+		.mono { font-family: var(--mono); }
+		.topbar {
+			position: sticky; top: 0; z-index: 10;
+			border-bottom: 1px solid var(--line);
+			background: rgba(17,19,15,.84);
+			backdrop-filter: blur(16px);
+		}
+		.nav { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+		.brand { display: inline-flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 700; }
+		.brand-mark { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--lime); color: var(--lime); font-family: var(--mono); font-size: 13px; }
+		.nav-links { display: flex; align-items: center; gap: clamp(16px, 3vw, 34px); color: var(--muted); font-family: var(--mono); font-size: 12px; }
+		.nav-links a { transition: color .2s ease; }
+		.nav-links a:hover, .nav-links a:focus-visible { color: var(--lime); }
+		.nav-tag { color: var(--lime); border: 1px solid rgba(201,255,84,.35); padding: 9px 12px; font: 11px var(--mono); white-space: nowrap; }
+		.hero { min-height: 650px; display: grid; grid-template-columns: 1.07fr .93fr; align-items: center; gap: 30px; padding-block: 84px 88px; }
+		.eyebrow { display: flex; align-items: center; gap: 10px; color: var(--lime); font: 12px var(--mono); text-transform: uppercase; }
+		.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 14px var(--lime); animation: blink 1.8s ease-in-out infinite; }
+		h1 { max-width: 700px; margin: 26px 0 20px; font-size: clamp(58px, 9vw, 106px); line-height: .91; letter-spacing: 0; }
+		h1 .outline { color: transparent; -webkit-text-stroke: 1px var(--paper); }
+		h1 .lime { color: var(--lime); }
+		.hero-copy { max-width: 470px; color: var(--muted); font-size: 17px; line-height: 1.7; }
+		.hero-copy strong { color: var(--paper); font-weight: 600; }
+		.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+		.button { display: inline-flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 17px; border: 1px solid var(--line); font: 12px var(--mono); transition: transform .2s ease, background .2s ease, border-color .2s ease; }
+		.button:hover { transform: translateY(-3px); border-color: var(--lime); }
+		.button-primary { background: var(--lime); color: var(--ink); border-color: var(--lime); }
+		.button-primary:hover { background: #d9ff8a; }
+		.hero-art { position: relative; min-height: 390px; display: grid; place-items: center; }
+		.orbit { position: absolute; border: 1px solid rgba(243,242,232,.15); border-radius: 50%; animation: orbit 24s linear infinite; }
+		.orbit-one { width: min(360px, 80vw); aspect-ratio: 1; }
+		.orbit-two { width: min(275px, 65vw); aspect-ratio: 1; animation-direction: reverse; animation-duration: 18s; border-style: dashed; }
+		.orbit::before { content: ""; position: absolute; top: 17%; left: 11%; width: 10px; height: 10px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 18px rgba(255,118,95,.7); }
+		.orbit-two::before { top: auto; left: auto; right: 4%; bottom: 26%; width: 8px; height: 8px; background: var(--sky); box-shadow: 0 0 18px rgba(139,220,255,.65); }
+		.terminal { position: relative; z-index: 1; width: min(370px, 90%); border: 1px solid rgba(201,255,84,.3); background: rgba(25,28,23,.94); box-shadow: 14px 14px 0 rgba(201,255,84,.08), 0 22px 80px rgba(0,0,0,.3); transform: rotate(-3deg); animation: float 5s ease-in-out infinite; }
+		.terminal-bar { display: flex; align-items: center; gap: 7px; height: 38px; padding-inline: 14px; border-bottom: 1px solid var(--line); color: var(--muted); font: 10px var(--mono); }
+		.terminal-bar .window-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--coral); }
+		.terminal-bar .window-dot:nth-child(2) { background: #ffd65a; }
+		.terminal-bar .window-dot:nth-child(3) { background: var(--lime); }
+		.terminal-bar span:last-child { margin-left: auto; }
+		.terminal-code { min-height: 216px; padding: 23px 22px; color: var(--paper); font: 13px/2 var(--mono); }
+		.code-dim { color: #82887c; }
+		.code-green { color: var(--lime); }
+		.code-pink { color: var(--coral); }
+		.code-blue { color: var(--sky); }
+		.terminal-foot { display: flex; justify-content: space-between; padding: 11px 15px; border-top: 1px solid var(--line); color: var(--muted); font: 10px var(--mono); }
+		.terminal-foot strong { color: var(--lime); font-weight: 400; }
+		.float-label { position: absolute; z-index: 2; font: 11px var(--mono); padding: 9px 12px; border: 1px solid var(--line); background: var(--panel); }
+		.label-a { right: 2%; top: 17%; color: var(--coral); transform: rotate(5deg); }
+		.label-b { left: 0; bottom: 17%; color: var(--sky); transform: rotate(-6deg); }
+		.ticker { overflow: hidden; border-block: 1px solid var(--line); background: var(--lime); color: var(--ink); }
+		.ticker-track { display: flex; width: max-content; gap: 24px; padding: 14px 0; animation: marquee 27s linear infinite; font: 12px var(--mono); text-transform: uppercase; }
+		.ticker-track span { display: inline-flex; align-items: center; gap: 24px; }
+		.ticker-track b { font-size: 17px; font-weight: 400; }
+		.section { padding-block: 102px; }
+		.section-head { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 36px; }
+		.section-kicker { color: var(--coral); font: 11px var(--mono); text-transform: uppercase; }
+		h2 { margin: 10px 0 0; font-size: clamp(36px, 6vw, 60px); line-height: 1; letter-spacing: 0; }
+		.section-note { max-width: 340px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+		.projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+		.project {
+			--accent: var(--lime);
+			position: relative; min-height: 260px; padding: 23px; overflow: hidden;
+			display: flex; flex-direction: column; justify-content: space-between;
+			border: 1px solid var(--line); background: linear-gradient(145deg, rgba(34,38,31,.98), rgba(25,28,23,.92));
+			transition: transform .25s ease, border-color .25s ease;
+		}
+		.project:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--accent) 60%, transparent); }
+		.project:nth-child(2), .project:nth-child(5) { --accent: var(--coral); }
+		.project:nth-child(3), .project:nth-child(6) { --accent: var(--sky); }
+		.project::after { content: ""; position: absolute; right: -28px; top: -30px; width: 120px; height: 120px; border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent); border-radius: 50%; box-shadow: 0 0 0 15px color-mix(in srgb, var(--accent) 4%, transparent), 0 0 0 32px color-mix(in srgb, var(--accent) 3%, transparent); }
+		.project-top { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font: 10px var(--mono); }
+		.project-icon { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); color: var(--accent); font-size: 24px; }
+		.project h3 { position: relative; z-index: 1; margin: 24px 0 8px; font-size: 24px; }
+		.project p { max-width: 270px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+		.project-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 20px; }
+		.project-tags span { padding: 6px 8px; border: 1px solid var(--line); color: var(--accent); font: 9px var(--mono); }
+		.about-band { border-block: 1px solid var(--line); background: rgba(25,28,23,.7); }
+		.about-layout { display: grid; grid-template-columns: .85fr 1.15fr; gap: 80px; align-items: start; }
+		.about-title { position: sticky; top: 110px; }
+		.about-title h2 { max-width: 390px; }
+		.about-title .sticker { display: inline-block; margin-top: 28px; padding: 11px 14px; border: 1px solid var(--lime); color: var(--lime); font: 11px var(--mono); transform: rotate(-3deg); }
+		.about-copy { color: var(--muted); font-size: 16px; line-height: 1.85; }
+		.about-copy p { margin: 0 0 20px; }
+		.about-copy strong { color: var(--paper); }
+		.learning-list { margin-top: 34px; border-top: 1px solid var(--line); }
+		.learning-row { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 14px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+		.learning-num { color: var(--coral); font: 11px var(--mono); }
+		.learning-row strong { color: var(--paper); font-size: 14px; font-weight: 600; }
+		.learning-row span:last-child { color: var(--muted); font: 10px var(--mono); text-align: right; }
+		.playground { padding-block: 98px; }
+		.play-box { display: grid; grid-template-columns: 1fr .8fr; border: 1px solid rgba(139,220,255,.3); background: var(--panel); }
+		.play-main { padding: clamp(24px, 5vw, 48px); }
+		.play-main h2 { max-width: 450px; font-size: clamp(34px, 5vw, 54px); }
+		.play-main p { max-width: 440px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+		.play-button { margin-top: 12px; border: 0; cursor: pointer; }
+		.play-output { min-height: 260px; display: flex; flex-direction: column; justify-content: center; padding: 28px; border-left: 1px solid var(--line); background: #151813; font: 12px/2 var(--mono); }
+		.output-line { min-height: 24px; color: var(--muted); }
+		.output-line.active { color: var(--lime); }
+		.output-line .prompt { color: var(--coral); padding-right: 8px; }
+		.output-cursor { display: inline-block; width: 7px; height: 14px; margin-left: 4px; vertical-align: -2px; background: var(--lime); animation: blink .8s steps(2) infinite; }
+		footer { border-top: 1px solid var(--line); }
+		.footer-inner { min-height: 86px; display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--muted); font: 10px var(--mono); }
+		.footer-inner strong { color: var(--lime); font-weight: 400; }
+		.reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
+		.reveal.visible { opacity: 1; transform: translateY(0); }
+		@keyframes blink { 50% { opacity: .35; } }
+		@keyframes orbit { to { transform: rotate(360deg); } }
+		@keyframes float { 0%,100% { transform: rotate(-3deg) translateY(0); } 50% { transform: rotate(-1deg) translateY(-10px); } }
+		@keyframes marquee { to { transform: translateX(-50%); } }
+		@media (max-width: 780px) {
+			.wrap { width: min(100% - 36px, 600px); }
+			.nav { min-height: 64px; }
+			.nav-links { gap: 15px; font-size: 10px; }
+			.nav-tag { display: none; }
+			.hero { min-height: 0; grid-template-columns: 1fr; padding-block: 72px 54px; }
+			.hero-art { min-height: 350px; }
+			.projects { grid-template-columns: repeat(2, 1fr); }
+			.about-layout { grid-template-columns: 1fr; gap: 32px; }
+			.about-title { position: static; }
+			.about-title .sticker { margin-top: 18px; }
+			.section { padding-block: 76px; }
+			.play-box { grid-template-columns: 1fr; }
+			.play-output { min-height: 190px; border-left: 0; border-top: 1px solid var(--line); }
+		}
+		@media (max-width: 480px) {
+			.wrap { width: calc(100% - 30px); }
+			.nav-links { gap: 12px; }
+			.nav-links a { font-size: 9px; }
+			h1 { font-size: clamp(54px, 17vw, 76px); }
+			.hero-copy { font-size: 15px; }
+			.hero-art { min-height: 310px; }
+			.orbit-one { width: 290px; }
+			.orbit-two { width: 225px; }
+			.terminal { width: 88%; }
+			.terminal-code { font-size: 11px; padding-inline: 15px; }
+			.float-label { font-size: 9px; }
+			.section-head { display: block; }
+			.section-note { margin-top: 15px; }
+			.projects { grid-template-columns: 1fr; }
+			.project { min-height: 230px; }
+			.learning-row { grid-template-columns: 32px 1fr; }
+			.learning-row span:last-child { grid-column: 2; text-align: left; }
+			.footer-inner { min-height: 76px; font-size: 9px; }
+		}
+		@media (prefers-reduced-motion: reduce) {
+			*, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+			.reveal { opacity: 1; transform: none; }
+		}
+	</style>
+</head>
+<body>
+	<a class="skip-link" href="#main">Skip to content</a>
+	<header class="topbar">
+		<nav class="nav wrap" aria-label="Main navigation">
+			<a class="brand" href="#top" aria-label="Smart home"><span class="brand-mark">S.</span><span>smart.exe</span></a>
+			<div class="nav-links"><a href="#projects">projects</a><a href="#about">about</a><a href="#learning">learning</a></div>
+			<span class="nav-tag">STATUS: BUILDING</span>
+		</nav>
+	</header>
+
+	<main id="main">
+		<section class="hero wrap" id="top">
+			<div class="hero-content">
+				<div class="eyebrow"><span class="live-dot"></span> a young mind, a keyboard, big ideas</div>
+				<h1>Hey, I'm<br><span class="outline">Smart</span><span class="lime">.</span><br><span class="outline">I make</span><br>games<span class="lime">_</span></h1>
+				<p class="hero-copy">I'm a <strong>developer in progress</strong>, learning Python by turning ideas into little games. Every bug is a clue. Every project teaches me something new.</p>
+				<div class="hero-actions">
+					<a class="button button-primary" href="#projects">See what I'm making <span aria-hidden="true">↓</span></a>
+					<a class="button" href="#about">A little about me <span aria-hidden="true">↗</span></a>
+				</div>
+			</div>
+			<div class="hero-art" aria-label="Animated Python code terminal illustration">
+				<div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+				<span class="float-label label-a">// idea loading...</span><span class="float-label label-b">python × imagination</span>
+				<div class="terminal">
+					<div class="terminal-bar"><i class="window-dot"></i><i class="window-dot"></i><i class="window-dot"></i><span>my_next_game.py</span></div>
+					<div class="terminal-code"><span class="code-dim">01</span> <span class="code-pink">def</span> <span class="code-blue">make_something_cool</span>():<br><span class="code-dim">02</span> &nbsp;&nbsp;idea = <span class="code-green">"what if..."</span><br><span class="code-dim">03</span> &nbsp;&nbsp;<span class="code-pink">while</span> learning:<br><span class="code-dim">04</span> &nbsp;&nbsp;&nbsp;&nbsp;try_a_thing()<br><span class="code-dim">05</span> &nbsp;&nbsp;&nbsp;&nbsp;fix_the_bugs()<br><span class="code-dim">06</span> &nbsp;&nbsp;&nbsp;&nbsp;level_up()<br><span class="code-dim">07</span> &nbsp;&nbsp;<span class="code-pink">return</span> <span class="code-green">"made it!"</span><span class="output-cursor"></span></div>
+					<div class="terminal-foot"><span>PYTHON / LEARNING MODE</span><strong>● ONLINE</strong></div>
+				</div>
+			</div>
+		</section>
+
+		<div class="ticker" aria-hidden="true"><div class="ticker-track"><span>curiosity first <b>✳</b> build, break, learn <b>✳</b> powered by Python <b>✳</b> game ideas incoming <b>✳</b> curiosity first <b>✳</b> build, break, learn <b>✳</b> powered by Python <b>✳</b> game ideas incoming <b>✳</b></span><span>curiosity first <b>✳</b> build, break, learn <b>✳</b> powered by Python <b>✳</b> game ideas incoming <b>✳</b> curiosity first <b>✳</b> build, break, learn <b>✳</b> powered by Python <b>✳</b> game ideas incoming <b>✳</b></span></div></div>
+
+		<section class="section wrap" id="projects">
+			<div class="section-head reveal"><div><div class="section-kicker">01 / things I've made</div><h2>Small games.<br>Big brain energy.</h2></div><p class="section-note">I learn best by making things that move, react, and are fun to play. Here's what's on my game shelf so far.</p></div>
+			<div class="projects">
+				<article class="project reveal"><div class="project-top"><span>GAME_001</span><span class="project-icon" aria-hidden="true">〰</span></div><div><h3>Snake</h3><p>Grab the food, grow your tail, and don't run into yourself. A classic built with Python Turtle.</p><div class="project-tags"><span>GAME LOOP</span><span>KEYBOARD</span><span>RANDOM</span></div></div></article>
+				<article class="project reveal"><div class="project-top"><span>GAME_002</span><span class="project-icon" aria-hidden="true">▰</span></div><div><h3>Brick Breaker</h3><p>Keep the ball in play and clear the colorful bricks. The paddle is ready. Are you?</p><div class="project-tags"><span>COLLISIONS</span><span>SCORE</span><span>TURTLE</span></div></div></article>
+				<article class="project reveal"><div class="project-top"><span>GAME_003</span><span class="project-icon" aria-hidden="true">↔</span></div><div><h3>Ping Pong</h3><p>A two-player paddle battle with bouncing-ball logic, keyboard controls, and a score counter.</p><div class="project-tags"><span>2 PLAYERS</span><span>INPUT</span><span>LOGIC</span></div></div></article>
+				<article class="project reveal"><div class="project-top"><span>GAME_004</span><span class="project-icon" aria-hidden="true">▦</span></div><div><h3>Memory Match</h3><p>Flip the cards, find the pairs, and try to beat your best. Made with Python Tkinter.</p><div class="project-tags"><span>TKINTER</span><span>LISTS</span><span>EVENTS</span></div></div></article>
+				<article class="project reveal"><div class="project-top"><span>GAME_005</span><span class="project-icon" aria-hidden="true">✕</span></div><div><h3>Tic-Tac-Toe</h3><p>Cat versus dog on a tiny 3×3 board. Check the rows, columns, and diagonals for a winner.</p><div class="project-tags"><span>CONDITIONS</span><span>FUNCTIONS</span><span>TKINTER</span></div></div></article>
+				<article class="project reveal"><div class="project-top"><span>GAME_006</span><span class="project-icon" aria-hidden="true">▲</span></div><div><h3>Road Crossing</h3><p>Guide the turtle across the road, dodge the cars, and get back to the start if you crash.</p><div class="project-tags"><span>COLLISIONS</span><span>LOOPS</span><span>TURTLE</span></div></div></article>
+			</div>
+		</section>
+
+		<div class="about-band" id="about">
+			<section class="section wrap about-layout">
+				<div class="about-title reveal"><div class="section-kicker">02 / the human behind the code</div><h2>Not a pro.<br><span style="color:var(--lime)">Not stopping.</span></h2><span class="sticker">CURRENTLY: LEARNING EVERYTHING</span></div>
+				<div class="about-copy reveal"><p>Hey, I'm <strong>Smart</strong>. I'm a kid who likes making things on a computer and figuring out how they work. Right now, <strong>Python is my superpower-in-training.</strong></p><p>I started with games: a snake that moves, a ball that bounces, cards that flip. Along the way, I found out that code isn't just typing symbols. It's giving an idea a set of instructions and watching it come alive.</p><p>I'm still learning, still experimenting, and definitely still finding bugs. That's the fun part. This site is my little progress log, and the next project is always loading.</p>
+					<div class="learning-list" id="learning">
+						<div class="learning-row"><span class="learning-num">01</span><strong>Python foundations</strong><span>variables · functions · if/else</span></div>
+						<div class="learning-row"><span class="learning-num">02</span><strong>Game logic</strong><span>loops · collisions · scoring</span></div>
+						<div class="learning-row"><span class="learning-num">03</span><strong>Making things interactive</strong><span>keyboard · events · input</span></div>
+						<div class="learning-row"><span class="learning-num">04</span><strong>Python graphics</strong><span>Turtle · Tkinter · drawing</span></div>
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<section class="playground wrap reveal" aria-labelledby="play-title">
+			<div class="play-box">
+				<div class="play-main"><div class="section-kicker" style="color:var(--sky)">03 / tiny interactive thing</div><h2 id="play-title">Run the<br>learning loop.</h2><p>One button. A few lines. Infinite retries. That's pretty much how learning to code works.</p><button class="button button-primary play-button" id="run-button" type="button"><span aria-hidden="true">▶</span> Run my Python-ish loop</button></div>
+				<div class="play-output" id="play-output" aria-live="polite" aria-label="Learning loop output"><div class="output-line"><span class="prompt">&gt;&gt;&gt;</span>ready_when_you_are()</div><div class="output-line">press run to see what happens<span class="output-cursor"></span></div></div>
+			</div>
+		</section>
+	</main>
+
+	<footer><div class="footer-inner wrap"><span>MADE BY <strong>SMART</strong> · WITH PYTHON & CURIOSITY</span><a href="#top">BACK TO TOP ↑</a><span>© <span id="year"></span> · STILL LEARNING</span></div></footer>
+	<script>
+		const revealItems = document.querySelectorAll('.reveal');
+		const revealObserver = new IntersectionObserver((entries, observer) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					entry.target.classList.add('visible');
+					observer.unobserve(entry.target);
+				}
+			});
+		}, { threshold: 0.12 });
+		revealItems.forEach((item) => revealObserver.observe(item));
+
+		document.getElementById('year').textContent = new Date().getFullYear();
+
+		const runButton = document.getElementById('run-button');
+		const output = document.getElementById('play-output');
+		const loopMessages = [
+			['idea = "make a game"', 'step 1: start with an idea ✳'],
+			['while learning:', 'step 2: try, test, try again ↻'],
+			['    fix_the_bugs()', 'step 3: bugs are clues, actually!'],
+			['    keep_going = True', 'step 4: level up unlocked ▲'],
+			['print("I made it!")', 'nice work. now imagine what is next...']
+		];
+		let runCount = 0;
+		runButton.addEventListener('click', () => {
+			runCount += 1;
+			const lines = loopMessages.map(([code, message], index) => `<div class="output-line ${index === loopMessages.length - 1 ? 'active' : ''}"><span class="prompt">${index === 0 ? '&gt;&gt;&gt;' : '... '}</span>${index === 0 ? code : message}</div>`);
+			lines.splice(1, 0, `<div class="output-line"><span class="prompt">... </span>${loopMessages[1][0]}</div>`);
+			output.innerHTML = `${lines.join('')}<div class="output-line active">loop #${runCount} complete <span class="output-cursor"></span></div>`;
+			runButton.innerHTML = '<span aria-hidden="true">↻</span> Run it again';
+		});
+	</script>
+</body>
+</html>
+
